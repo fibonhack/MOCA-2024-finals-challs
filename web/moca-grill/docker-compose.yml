@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: ./src
+    environment:
+      - SECRET_KEY=f60e6c481ed1d610ae009f573e226a37
+      - TARGETSTAFFPASSWORD=525976eafbe4e2872b45d383023bafc9
+      - REVIEWUSERPASSWORD=93f799d7af087236d5833789c70e8297
+      - FLAG=PWNX{50m371m35_4_70k3n_15_4ll_y0u_n33d}
+    ports:
+      - "2000:80"

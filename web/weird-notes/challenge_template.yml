@@ -1,0 +1,13 @@
+name: "Weird Notes"
+author: pianka
+
+description: "Can we stop with this client-side note taking challenges? This is getting repetitive..."
+port: 3000
+host: "challs.{{ CTFD_URL }}"
+connection_info: "http://{{ host }}:{{ port }}"
+
+topics:
+  - web
+
+files:
+  - attachments/weird-notes.zip

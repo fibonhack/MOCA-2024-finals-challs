@@ -1,0 +1,14 @@
+name: "Price Checker"
+author: b0n0b0
+
+description: "Lucca is known for three things: its walls, Lucca Comics & Games, and the stereotype that people from Lucca are stingy. The author is from Lucca and admits he hates paying more than necessary."
+port: 20001
+host: "challs.{{ CTFD_URL }}"
+connection_info: "http://{{ host }}:{{ port }}"
+# healthcheck: "checker.py HOST={{ host }} PORT={{ port }}"
+
+topics:
+- web
+
+files:
+- attachments/price_checker.zip

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaaS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E84545',
+                        secondary: '#903749',
+                    },
+                },
+            },
+        };
+
+    </script>
+</head>
+
+<body class="bg-zinc-900  flex flex-col items-center justify-center h-dvh">
+    <form id="searchForm" class="bg-zinc-800 shadow-md rounded px-8 pt-6 pb-8 w-1/2">
+        <div class="mb-4">
+            <label class="block text-light text-sm font-bold mb-2 text-zinc-300" for="title">Product</label>
+            <input
+                class="shadow appearance-none rounded w-full py-2 px-3 bg-zinc-700 leading-tight text-zinc-200 outline-none focus:shadow-outline"
+                id="search_param" type="text" placeholder="Nerf gun" name="search_param">
+        </div>
+        <div class="mb-6">
+            <label class="block text-light text-sm font-bold mb-2 text-zinc-300" for="url">shop</label>
+            <select id="url" name="url"
+                class="shadow appearance-none rounded w-full py-2 px-3 bg-zinc-700 mb-3 leading-tight text-zinc-200 outline-none focus:shadow-outline">
+                <option value="http://api.ebay.com">Ebay</option>
+            </select>
+        </div>
+        <input
+            class="bg-secondary hover:bg-primary text-light font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit" value="Search"></input>
+    </form>
+
+    <div id="resultContainer"
+        class="bg-zinc-800 shadow-md rounded-md px-8 pt-6 pb-8 my-4 text-zinc-300 w-1/2 flex flex-col items-center justify-center">
+        <h2 class="text-2xl font-semibold text-center w-full text-zinc-100" id="resultTitle">Your result will be here!</h2>
+        <div class="border-b border-zinc-300 w-full my-4"></div>
+        <img id="resultImg" class="rounded-lg">
+        <div class="border-b border-zinc-300 w-full my-4"></div>
+        <p id="resultPrice" class="text-lg text-center">try it out</p>
+    </div>
+
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var formData = {
+                url: document.getElementById("url").value,
+                search_param: document.getElementById("search_param").value
+            };
+            fetch("/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Response data:", data);
+                    document.getElementById("resultPrice").innerText = data['price']['value'] + " " + data['price']['currency']
+                    document.getElementById("resultTitle").innerText = data['title']
+                    document.getElementById("resultImg").src = data['image']['imageUrl']
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while processing your request.");
+                });
+        });
+    </script>
+
+
+</body>

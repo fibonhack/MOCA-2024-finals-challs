@@ -1,0 +1,7 @@
+services:
+  chall:
+    build: src
+    ports:
+      - "3000:3000"
+    environment:
+      - FLAG=PWNX{chr0m3_bug5_4r3_4lw4y5_fun_why_w0nt_th3y_p4tch_th3m_th0}

@@ -1,0 +1,11 @@
+name: "MOCA Grill"
+author: drw0if
+
+description: The best restaurants in town to eat arrosticini (and more)! We have the best food and the best service. Come and visit us!
+port: 80
+host: "challs.{{ CTFD_URL }}"
+connection_info: "http://{{ host }}:{{ port }}"
+# healthcheck: "checker.py HOST={{ host }} PORT={{ port }}"
+
+topics:
+- web

@@ -1,0 +1,13 @@
+name: "curso1"
+author: gio-d3141, drw0if
+
+description: |
+  sorry :/
+
+  Note: the flag does not follow the usual format: when you recover it, wrap it with PWNX{}.
+
+topics:
+  - misc
+
+files:
+  - attachments/curso1.xslx

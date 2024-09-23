@@ -1,0 +1,11 @@
+name: "hash-oracle"
+author: marcog
+
+description: |
+  A simple hash oracle that you can use to hash any string you want, where you want.
+
+topics:
+  - crypto
+
+files:
+  - attachments/attachments.zip

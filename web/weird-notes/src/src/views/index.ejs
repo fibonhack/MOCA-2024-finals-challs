@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9"></script>
+	<title>Create new note</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+	<div class="container py-5">
+		<div class="row">
+			<div class="col-md-6 mx-auto" id="container">
+
+				<div class="card">
+					<div class="card-body">
+						<h1>Create new note</h1>
+
+						<form id="new_post">
+							<div class="mb-3">
+								<label for="note_title" class="form-label">Title</label>
+								<input type="text" class="form-control" id="note_title">
+							</div>
+							<div class="mb-3">
+								<label for="note_content" class="form-label">Content</label>
+								<textarea class="form-control" id="note_content" rows="3"></textarea>
+							</div>
+
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="note_is_public">
+								<label class="form-check-label" for="note_is_public">
+									Make note public
+								</label>
+							</div>
+
+							<div class="text-center mt-4"><button type="submit" class="btn btn-primary"
+									id="note_btn">Make a new note!</button></div>
+						</form>
+					</div>
+				</div>
+
+				<% if (notes.length> 0) { %>
+					<h2 class="mt-5">Your notes</h2>
+					<ul>
+						<% for(let note of notes) { %>
+							<li><a href="/?<%=encodeURIComponent(note.title)%>">
+									<%= note.title %>
+								</a></li>
+							<% } %>
+					</ul>
+					<% } %>
+			</div>
+		</div>
+	</div>
+
+
+
+	<script>
+		async function loadNote(title, author) {
+			Array.from(container.children).forEach((child) => {
+				if (child.tagName !== 'SCRIPT') {
+					container.removeChild(child)
+				}
+			})
+
+			const res = await fetch('/api/search', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ title, author })
+			})
+			const data = await res.json()
+
+			if (res.status === 200) {
+				const card = document.createElement('div')
+				card.classList = 'card'
+				container.appendChild(card)
+
+				const card_body = document.createElement('div')
+				card_body.classList = 'card-body'
+				card.appendChild(card_body)
+
+				const h1 = document.createElement('h1')
+				h1.classList = 'card-title'
+				h1.innerHTML = DOMPurify.sanitize(data.note.title)
+				card_body.appendChild(h1)
+
+				const p = document.createElement('p')
+				p.classList = 'card-text'
+				p.innerHTML = DOMPurify.sanitize(data.note.note)
+				card_body.appendChild(p)
+
+				document.head.querySelector('title').innerText = data.note.title
+
+				if (!author) {
+					const card_footer = document.createElement('div')
+					card_footer.classList = 'd-flex card-footer mt-5 gap-3'
+					card.appendChild(card_footer)
+
+					const pow_wrapper = document.createElement('div')
+					pow_wrapper.classList = 'w-100'
+					card_footer.appendChild(pow_wrapper)
+
+					const pow_input = document.createElement('input')
+					pow_input.id = 'pow'
+					pow_input.type = 'text'
+					pow_input.placeholder = 'Proof of work'
+					pow_input.classList = 'form-control'
+					pow_wrapper.appendChild(pow_input)
+
+					const pow_command = document.createElement('div')
+					pow_command.classList = 'font-monospace form-text'
+					pow_command.innerText = 'Solve with: hashcash -mCb<%= BITS %> "<%= pow %>"'
+					pow_wrapper.appendChild(pow_command)
+
+					const button = document.createElement('button')
+					button.innerHTML = 'Report to an admin'
+					button.classList = 'btn btn-danger text-nowrap'
+					button.onclick = async () => {
+						const res = await fetch('/api/report', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({ title, pow: pow.value.trim() })
+						})
+						const data = await res.json()
+						if (res.status === 200) {
+							alert(data.msg)
+						} else {
+							alert(data.error)
+						}
+					}
+					card_footer.appendChild(button)
+				}
+			} else {
+				alert(data.error)
+				window.location = '/'
+			}
+		}
+
+		if (!!location.search) {
+			loadNote(decodeURIComponent(location.search.slice(1)), undefined)
+		} else {
+			new_post.onsubmit = async (e) => {
+				e.preventDefault()
+				const title = note_title.value
+				const content = note_content.value
+				const is_public = note_is_public.checked
+
+				const res = await fetch('/api/note', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ title, content, is_public })
+				})
+				if (res.status === 200) {
+					window.location = '/?' + encodeURIComponent(title)
+				} else {
+					const data = await res.json()
+					alert(data.error)
+				}
+			}
+		}
+	</script>
+</body>
+
+</html>

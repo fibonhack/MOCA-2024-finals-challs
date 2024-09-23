@@ -1,0 +1,12 @@
+name: "The car"
+author: drw0if
+
+description: During my rf journey I bought a chinese rf car and hacked it. It is based around the `YX-4116` chip and it's protocol is straightforward. The transmission frequency is 27MHz. Your goal is to control the car and let him drive over the circuit to the flag. Once you've developed your own controller, ask the admin to give you the HackRF in order to transmit and go to the car circuit nearby the admin table. Have fun!
+port: 10
+host: "challs.{{ CTFD_URL }}"
+connection_info: "nc {{ host }} {{ port }}"
+
+healthcheck: 'solve/client.py --hostname={{ host }} --port={{ port }}'
+
+topics:
+  - rf

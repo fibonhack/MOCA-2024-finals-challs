@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  pwn_compilermaster:
+    container_name: pwn_compilermaster
+    build:
+      context: .
+    ports:
+    - '10003:6000/tcp'
+    privileged: true

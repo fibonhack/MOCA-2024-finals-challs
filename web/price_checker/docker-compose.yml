@@ -1,0 +1,40 @@
+services:
+
+  price_checker-backend:
+    build: ./src
+    environment:
+      EBAY_CLIENT_ID: "[READCTED]"
+      EBAY_DEV_ID: "[READCTED]"
+      EBAY_CLIENT_SECRET: "[READCTED]"
+      DBPASS: root
+      DBUSER: root
+      DBSCHEMA: price_checker_db
+      DBHOST: price_checker-database
+      DBPORT: 3306
+    networks:
+      - price_checker-intranet
+    depends_on:
+      price_checker-database:
+        condition: service_healthy
+    ports:
+      - "20001:5000"
+
+  price_checker-database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    command:
+      - --datadir=/var/lib/mysql-no-volume
+      - --default-authentication-plugin=caching_sha2_password
+    volumes:
+      - ./database/db.sql:/docker-entrypoint-initdb.d/db.sql
+    networks:
+      - price_checker-intranet
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 6s
+      retries: 10
+
+networks:
+  price_checker-intranet:

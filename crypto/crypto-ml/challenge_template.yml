@@ -1,0 +1,13 @@
+name: "crypt-ml"
+author: marcog
+
+description: |
+  I've created an AI that can encrypt messages, can you break it? And yes it is mainly a crypto challenge.
+
+topics:
+  - crypto
+  - ml
+  - rev
+
+files:
+  - attachments/attachments.zip

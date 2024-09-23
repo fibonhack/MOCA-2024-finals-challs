@@ -1,0 +1,5 @@
+services:
+  chall:
+    build: ./src
+    ports:
+      - "5555:5555"
